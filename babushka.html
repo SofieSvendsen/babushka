@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MENU</title>
+    <style>
+        .templateModtager {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin: 0 auto;
+            grid-gap: 10px;
+            max-width: 1024px;
+        }
+        
+        img {
+            max-width: 100%;
+        }
+        
+        .menu {
+            border: 1px solid #666;
+            padding: 10px;
+        }
+        
+        .menu:nth-child(odd) {
+            background: #ccc;
+        }
+        
+        @media screen and (max-width:700px) {
+            .templateModtager {
+                max-width: 100%;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media screen and (max-width: 500px) {
+            .templateModtager {
+                max-width: 100%;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        
+        h1 {
+            font-size: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="templateModtager"></div>
+    <template class="myTemplate">
+        
+    <div class="menu">
+        <h1 class="navn"></h1>
+        <img class="billede" src="" alt="">
+        <p class="pris"></p>
+        <p class="kortbeskrivelse"></p>
+        <p class="langbeskrivelse"></p>
+
+        
+    </div>
+    </template>
+
+
+    <script>
+        let menu;
+
+        document.addEventListener("DOMContentLoaded", loadJson);
+
+        let modtager = document.querySelector(".templateModtager");
+        let template = document.querySelector(".myTemplate");
+
+        async function loadJson() {
+            let minListe = await fetch("menu.json");
+            menu = await minListe.json(); // json fil bilver hentet 
+            console.log(menu);
+
+            visMenu(menu); //menuen sender videre til funktionen visMenu
+        }
+
+        function visMenu(menu) {
+
+            menu.forEach(hverRet => { // arryet menu bliver løbet igennem og for hver ret genereres et nyt html element 
+                let klon = template.cloneNode(true).content;
+
+                klon.querySelector(".navn").textContent = hverRet.navn;
+                klon.querySelector(".billede").setAttribute("src", "imgs/small/" + hverRet.billede + "-sm.jpg")
+                klon.querySelector(".billede").alt = "billede af " + hverRet.billede;
+                klon.querySelector(".pris").textContent = "pris:" + " " + hverRet.pris + " " + "kr";
+                klon.querySelector(".kortbeskrivelse").textContent = hverRet.kortbeskrivelse;
+                klon.querySelector(".langbeskrivelse").textContent = hverRet.langbeskrivelse;
+
+
+
+                modtager.appendChild(klon);
+            })
+
+        }
+    </script>
+
+</body>
+
+</html>
